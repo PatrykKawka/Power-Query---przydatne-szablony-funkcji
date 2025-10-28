@@ -1,0 +1,14 @@
+w edytorze kolumny niestandardowej:
+
+let
+Warunki = 
+{
+[Kolumna] > 0 and [Kolumna] <500,
+[Kolumna] >= 500 and [Kolumna] <1000
+...
+}
+
+Wyniki = {0.1, 0.2,0.3 ... to co po then}
+
+in
+Wyniki{List.PositionOf(Warunki, true)}
