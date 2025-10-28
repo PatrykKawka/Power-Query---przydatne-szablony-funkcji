@@ -1,0 +1,17 @@
+Symbol ?? w Power Query (język M) to operator wartości domyślnej (null-coalescing operator).
+
+Przykłady wykorzystania:
+1)
+wartość1 ?? wartość2
+Jeśli wartość1 ≠ null → zwraca wartość1. Jeśli wartość1 = null → zwraca wartość2.
+
+null ?? 5 - Bo pierwsza wartość (null) jest pusta, więc zwraca drugą.
+
+2) = Table.AddColumn(Tabela, "CenaKońcowa", each [CenaPromocyjna] ?? [CenaPodstawowa])
+Jeśli CenaPromocyjna ma wartość → użyje jej. Jeśli CenaPromocyjna jest null → weźmie CenaPodstawowa.
+
+3) [Kolumna 1] ?? [Kolumna 2] ?? [Kolumna 3] - jesli jedna kolumna jest pusta to podaj kolejna itp
+
+4) [Kolumna] ?? 0 - [Kolumna] ?? 0 - Działania na kolumnach z nullami, zamiast nulla podaje 0 do działania
+
+5) each ([Kolumna] ?? 0) >50 - Filtrowanie na podstawie kolumny - zawsze odfiltrowuje null
