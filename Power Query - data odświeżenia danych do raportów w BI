@@ -1,0 +1,34 @@
+1. Data i godzina
+let
+    CzasUTC = DateTimeZone.UtcNow(),
+    DataBezStrefy = DateTimeZone.RemoveZone(CzasUTC),
+    CzyCzasLetni = (Data as datetime) as logical =>
+        let
+            Rok = Date.Year(Data),
+            OstatniaNiedzielaMarca = Date.EndOfWeek(#date(Rok, 3, 31), Day.Sunday),
+            OstatniaNiedzielaPazdziernika = Date.EndOfWeek(#date(Rok, 10, 31), Day.Sunday),
+            PoczątekDST = DateTime.From(OstatniaNiedzielaMarca + #duration(0, 2, 0, 0)),
+            KoniecDST = DateTime.From(OstatniaNiedzielaPazdziernika + #duration(0, 3, 0, 0)),
+            Wynik = (Data >= PoczątekDST) and (Data < KoniecDST)
+        in
+            Wynik,
+    PrzesuniecieGodzin = if CzyCzasLetni(DataBezStrefy) then 2 else 1,
+    CzasLokalny = DateTimeZone.SwitchZone(CzasUTC, PrzesuniecieGodzin),
+    WynikowaTabela = #table(
+        {"OstatnieOdświeżenie"},
+        {
+            {CzasLokalny}
+        }
+    )
+in
+    WynikowaTabela
+
+
+
+2. Data
+
+let
+    Source = #table( {"Last Refreshed"}, { { DateTime.LocalNow() } } ),
+    #"Zmieniono typ" = Table.TransformColumnTypes(Source,{{"Last Refreshed", type date}})
+in
+    #"Zmieniono typ"
