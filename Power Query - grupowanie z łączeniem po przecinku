@@ -1,0 +1,12 @@
+let
+    Źródło = TwojaTabela,
+    Grupowanie = Table.Group(Źródło, {"ID_autoryzacji"}, {
+        {"ID_zdarzenia", each Text.Combine(List.Transform([ID_zdarzenia], Text.From), ", "), type text},
+        {"ID_operatora", each Text.Combine(List.Transform([ID_operatora], Text.From), ", "), type text},
+        {"Opis", each Text.Combine(List.Transform([Opis], Text.From), ", "), type text},
+        {"Typ_zdarzenia2", each Text.Combine(List.Transform([Typ zdarzenia2], Text.From), ", "), type text},
+        {"ID_operatora2", each Text.Combine(List.Transform([id operatora2], Text.From), ", "), type text},
+        {"Zdarzenie", each Text.Combine(List.Transform([Zdarzenie], Text.From), ", "), type text}
+    })
+in
+    Grupowanie
