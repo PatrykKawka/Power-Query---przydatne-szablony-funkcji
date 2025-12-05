@@ -1,0 +1,31 @@
+1) INNER JOIN - mało wydajny sposb ale przydatny jesli chcemy od razu uzyskac inne kolumny z drugiej tabeli
+
+let
+    Źródło = Sql.Database("serwer", "baza", [Query=""]),
+    ŹródłoDoFiltrowania = Table.SelectColumns(zapytanie, {"kolumna"})
+    Połączone = Table.NestedJoin(Źródło, {"kolumna ze zrodla"}, ŹródłoDoFiltrowania, {"kolumna ze zrodla do filtrowania"}, "Dopasowane", JoinKind.Inner),
+    Wynik = Table.RemoveColumns(Połączone, {"Dopasowane"})
+in
+    Wynik
+
+
+2) List.Distinct 
+let
+    // Tworzymy listę unikalnych wartości z Zapytanie2
+    ListaWartosci = List.Distinct(Zapytanie2[KolumnaY]),
+
+    // Filtrujemy Zapytanie1, zachowując tylko te wiersze, gdzie KolumnaX jest na liście
+    Filtr = Table.SelectRows(Zapytanie1, each List.Contains(ListaWartosci, [KolumnaX]))
+in
+    Filtr
+
+3) List.Buffer + List.Distinct + filtrowanie listą (najwydajniejsze)
+
+let
+    // Tworzymy i buforujemy listę unikalnych wartości z Zapytanie2
+    ListaWartosci = List.Buffer(List.Distinct(Zapytanie2[KolumnaY])),
+
+    // Filtrujemy Zapytanie1 na podstawie zbuforowanej listy
+    Filtr = Table.SelectRows(Zapytanie1, each List.Contains(ListaWartosci, [KolumnaX]))
+in
+    Filtr
