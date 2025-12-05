@@ -1,0 +1,9 @@
+let
+    Źródło = ... ,  // wczytaj dane źródłowe
+    Rozdzielone = Table.TransformColumns(Źródło, {"Kategorie sprzedaży", each Text.Split(_, ","), type list}),
+    UsunięcieDuplikatów = Table.TransformColumns(Rozdzielone, {"Kategorie sprzedaży", each List.Distinct(_)}),
+    UsunięcieSpacji = Table.TransformColumns(UsunięcieDuplikatów, {"Kategorie sprzedaży", each List.Transform(_, Text.Trim)}),
+    Posortowanie = Table.TransformColumns(UsunięcieSpacji, {"Kategorie sprzedaży", each List.Sort(_, Order.Ascending)}),
+    Połączone = Table.TransformColumns(Posortowanie, {"Kategorie sprzedaży", each Text.Combine(_, ", "), type text})
+in
+    Połączone
