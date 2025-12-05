@@ -1,0 +1,7 @@
+Wybrane_kolumny = Table.SelectColumns(
+        Źródło,
+        {"Produkt", "Cena"},
+        //MissingField.UseNull - zostawia jawnie wskazane kolumny i wypełnia je wartością NULL
+        //MissingField.Ignore - ignoruje brakujące, jawnie wskazane kolumny
+        //MissingField.Error - domyślna wartość - zwraca błąd
+    )
