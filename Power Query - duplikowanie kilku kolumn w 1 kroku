@@ -1,0 +1,1 @@
+#"Duplikowanie kilku kolumn" = List.Accumulate({__LISTAZKOLUMNDODUPLIKOWANIA}, __POPRZEDNIKROK, (state as table, current as text) => Table.DuplicateColumn(state, current, current & " - Kopia"))
