@@ -1,0 +1,24 @@
+Filtered =
+    Table.SelectRows(
+        Source,
+        each
+            Comparer.OrdinalIgnoreCase([Miasto], "Warszawa") = 0
+            or Comparer.OrdinalIgnoreCase([Miasto], "Kraków") = 0
+    )
+
+
+Filtered =
+    Table.SelectRows(
+        Source,
+        each List.Contains(
+            {"Warszawa","Kraków","Gdynia"},
+            [Miasto],
+            Comparer.OrdinalIgnoreCase
+        )
+    )
+
+Filtrowanie =
+    Table.SelectRows(
+        Źródło,
+        each Text.Contains([Miasto], "krak", Comparer.OrdinalIgnoreCase
+    )
