@@ -1,0 +1,65 @@
+let
+    Source = __TABELA,
+        AddMostFrequentColumn = Table.AddColumn(#"Rozwinięty element Godziny otwarcia", "NajczesciejWystepujacaGodzina", each 
+        let
+            ValuesList = {
+                [PONIEDZIALEK], 
+                [WTOREK], 
+                [SRODA], 
+                [CZWARTEK], 
+                [PIATEK]
+            },
+            ValueCounts = List.Transform(
+                List.Distinct(ValuesList), 
+                (value) => {value, List.Count(List.Select(ValuesList, each _ = value))}
+            ),
+
+            SortedValueCounts = List.Sort(ValueCounts, (x, y) => y{1} - x{1}),
+
+            MostFrequentValue = if List.Count(SortedValueCounts) > 0 then SortedValueCounts{0}{0} else null,
+            MostFrequentCount = if List.Count(SortedValueCounts) > 0 then SortedValueCounts{0}{1} else 0,
+
+            SecondMostFrequentValue = if List.Count(SortedValueCounts) > 1 then SortedValueCounts{1}{0} else null,
+            SecondMostFrequentCount = if List.Count(SortedValueCounts) > 1 then SortedValueCounts{1}{1} else 0,
+
+            ThirdMostFrequentValue = if List.Count(SortedValueCounts) > 2 then SortedValueCounts{2}{0} else null,
+            ThirdMostFrequentCount = if List.Count(SortedValueCounts) > 2 then SortedValueCounts{2}{1} else 0,
+
+
+            MostFrequentColumns = List.Select({"PONIEDZIALEK", "WTOREK", "SRODA", "CZWARTEK", "PIATEK"},
+                                              (col) => Record.Field(_, col) = MostFrequentValue),
+            MostFrequentColumnsText = Text.Combine(MostFrequentColumns, ", "),
+
+            SecondMostFrequentColumns = List.Select({"PONIEDZIALEK", "WTOREK", "SRODA", "CZWARTEK", "PIATEK"},
+                                                   (col) => Record.Field(_, col) = SecondMostFrequentValue),
+            SecondMostFrequentColumnsText = Text.Combine(SecondMostFrequentColumns, ", "),
+
+            ThirdMostFrequentColumns = List.Select({"PONIEDZIALEK", "WTOREK", "SRODA", "CZWARTEK", "PIATEK"},
+                                                  (col) => Record.Field(_, col) = ThirdMostFrequentValue),
+            ThirdMostFrequentColumnsText = Text.Combine(ThirdMostFrequentColumns, ", ")
+        in
+            [NajczesciejWystepujacaGodzina = MostFrequentValue, 
+             DrugaNajczesciejWystepujacaGodzina = SecondMostFrequentValue, 
+             TrzeciaNajczesciejWystepujacaGodzina = ThirdMostFrequentValue,
+             LiczbaWystapienNajczesciej = Number.From(MostFrequentCount), 
+             LiczbaWystapienDrugiej = Number.From(SecondMostFrequentCount),
+             LiczbaWystapienTrzeciej = Number.From(ThirdMostFrequentCount),
+             KolumnaNajczesciej = MostFrequentColumnsText,
+             KolumnaDrugiej = SecondMostFrequentColumnsText,
+             KolumnaTrzeciej = ThirdMostFrequentColumnsText]
+    ),
+
+    ExpandedColumns = Table.ExpandRecordColumn(AddMostFrequentColumn, "NajczesciejWystepujacaGodzina", 
+                                               {"NajczesciejWystepujacaGodzina", 
+                                                "DrugaNajczesciejWystepujacaGodzina", 
+                                                "TrzeciaNajczesciejWystepujacaGodzina", 
+                                                "LiczbaWystapienNajczesciej", 
+                                                "LiczbaWystapienDrugiej", 
+                                                "LiczbaWystapienTrzeciej",
+                                                "KolumnaNajczesciej",
+                                                "KolumnaDrugiej",
+                                                "KolumnaTrzeciej"}),
+
+    Result = ExpandedColumns,
+in
+    Result
